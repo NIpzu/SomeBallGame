@@ -12,7 +12,7 @@ Game::Game(sf::RenderWindow& win)
 	levelHeight(Constants::levelHeight * 100),
 	levelWidth(Constants::levelWidth * 100),
 	updateInterval(Constants::updateInterval),
-	ballSpeed(Constants::ballSpeed),
+	ballSpeed(Constants::ballSpeed * Constants::updateInterval),
 	level(Constants::levelWidth, Constants::levelHeight),
 	ballRadius(Constants::ballRadius),
 	ballStartingHeight(Constants::levelHeight * 100 - Constants::ballRadius),
