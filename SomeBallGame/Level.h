@@ -1,38 +1,54 @@
 #pragma once
 #include <SFML\Graphics.hpp>
 #include <vector>
+#include "Constants.h"
+#include <assert.h>
 
 class Level
 {
 public:
-	Level(const int levelWidth, const int levelHeight);
+	Level();
+	~Level();
 	int GetWidth();
 	int GetHeight();
 	void Draw(sf::RenderTarget& rt);
+	bool Move();
 private:
 	const int levelWidth;
 	const int levelHeight;
 
 
+	class Block
+	{
+	public:
+		Block(const unsigned int maxHealth);
+		void Draw(sf::RenderTarget& rt, const int x, const int y);
+		bool Damage();
+	private:
+		unsigned int health;
+		const unsigned int maxHealth;
+	};
+
+	enum class LevelItemType
+	{
+		empty,
+		block,
+		extraball
+	};
 
 	class LevelItem
 	{
 	public:
-//		LevelItem();
-//		~LevelItem();
-
+		LevelItem(const LevelItemType type);
+		LevelItem(const Block* const block);
+		~LevelItem();
+		void DestroyBlock();
 	private:
-
+		LevelItemType type;
+		Block* block = nullptr;
 	};
 
 
-	class Block
-		{
-		public:
-		//	Block();
-		//	void Draw(sf::RenderTarget& rt);
-		private:
-		};
 
 
 	std::vector<LevelItem*> LevelGrid;

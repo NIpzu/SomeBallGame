@@ -1,10 +1,11 @@
 #include "Level.h"
 
-Level::Level(const int levelWidth, const int levelHeight)
+Level::Level()
 	:
-	levelWidth(levelWidth),
-	levelHeight(levelHeight)
+	levelWidth(Constants::levelWidth),
+	levelHeight(Constants::levelHeight)
 {
+	LevelGrid.resize(levelWidth * (levelHeight - 2));
 }
 
 int Level::GetWidth()
@@ -18,5 +19,33 @@ int Level::GetHeight()
 }
 
 void Level::Draw(sf::RenderTarget & rt)
+{
+
+}
+
+Level::LevelItem::LevelItem(const LevelItemType type)
+{
+}
+
+Level::LevelItem::LevelItem(const Block * const block)
+{
+}
+
+Level::LevelItem::~LevelItem()
+{
+	delete block;
+}
+
+void Level::LevelItem::DestroyBlock()
+{
+	assert(block != nullptr);
+	delete block;
+	type = LevelItemType::empty;
+}
+
+Level::Block::Block(const unsigned int maxHealth)
+	:
+	health(maxHealth),
+	maxHealth(maxHealth)
 {
 }
