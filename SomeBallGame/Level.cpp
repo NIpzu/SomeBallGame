@@ -6,6 +6,10 @@ Level::Level()
 	levelHeight(Constants::levelHeight)
 {
 	LevelGrid.resize(levelWidth * (levelHeight - 2));
+	for (int i = 0; i < LevelGrid.size(); i++)
+	{
+		*LevelGrid[i] = LevelItemType::empty;
+	}
 }
 
 int Level::GetWidth()
@@ -23,18 +27,20 @@ void Level::Draw(sf::RenderTarget & rt)
 
 }
 
+bool Level::Update()
+{
+	bool temp = Move();
+	CreateNewItems();
+	return temp;
+}
+
 bool Level::Move()
 {
 	for (int x = 0; x < levelWidth; x++)
 	{
-		LevelItemType type = LevelItemType::empty;
-		LevelGrid[x] = type;
-	}
-	for (int x = 0; x < levelWidth; x++)
-	{
 		for (int y = 1; y < levelHeight - 1; y++)
 		{
-			LevelGrid[y * levelWidth + x] = LevelGrid[y * levelWidth + levelWidth + x];
+			*LevelGrid[y * levelWidth + x] = *LevelGrid[y * levelWidth + levelWidth + x];
 		}
 	}
 	return false;
@@ -96,6 +102,11 @@ void Level::LevelItem::DamegeBlock()
 	block = nullptr;
 	type = LevelItemType::empty;
 	}
+}
+
+Level::LevelItemType Level::LevelItem::GetType()
+{
+	return type;
 }
 
 Level::Block::Block(const unsigned int maxHealth)

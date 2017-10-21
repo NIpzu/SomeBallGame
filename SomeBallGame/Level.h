@@ -12,11 +12,19 @@ public:
 	int GetWidth();
 	int GetHeight();
 	void Draw(sf::RenderTarget& rt);
-	bool Move();
+	bool Update();
 private:
 	const int levelWidth;
 	const int levelHeight;
+	bool Move();
+	void CreateNewItems();
 
+	enum class LevelItemType
+	{
+		empty,
+		block,
+		extraball
+	};
 
 	class Block
 	{
@@ -29,12 +37,7 @@ private:
 		const unsigned int maxHealth;
 	};
 
-	enum class LevelItemType
-	{
-		empty,
-		block,
-		extraball
-	};
+
 
 	class LevelItem
 	{
@@ -46,6 +49,7 @@ private:
 		LevelItem& operator= (const LevelItemType type);
 		~LevelItem();
 		void DamegeBlock();
+		LevelItemType GetType();
 	private:
 		LevelItemType type;
 		Block* block = nullptr;
