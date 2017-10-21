@@ -7,12 +7,12 @@
 class Level
 {
 public:
-	Level(int x);
+	Level();
 	//~Level();
 	int GetWidth();
 	int GetHeight();
 	void Draw(sf::RenderTarget& rt);
-	//bool Move();
+	bool Move();
 private:
 	const int levelWidth;
 	const int levelHeight;
@@ -22,7 +22,7 @@ private:
 	{
 	public:
 		Block(const unsigned int maxHealth);
-		void Draw(sf::RenderTarget& rt, const int x, const int y);
+		//void Draw(sf::RenderTarget& rt, const int x, const int y);
 		bool Damage();
 	private:
 		unsigned int health;
@@ -43,6 +43,7 @@ private:
 		LevelItem(const unsigned int maxHealth);
 		LevelItem(const LevelItem& other);
 		LevelItem& operator= (const LevelItem& other);
+		LevelItem& operator= (const LevelItemType type);
 		~LevelItem();
 		void DamegeBlock();
 	private:

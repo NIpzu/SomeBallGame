@@ -1,6 +1,6 @@
 #include "Level.h"
 
-Level::Level(int x)
+Level::Level()
 	:
 	levelWidth(Constants::levelWidth),
 	levelHeight(Constants::levelHeight)
@@ -23,6 +23,23 @@ void Level::Draw(sf::RenderTarget & rt)
 
 }
 
+bool Level::Move()
+{
+	for (int x = 0; x < levelWidth; x++)
+	{
+		LevelItemType type = LevelItemType::empty;
+		LevelGrid[x] = type;
+	}
+	for (int x = 0; x < levelWidth; x++)
+	{
+		for (int y = 1; y < levelHeight - 1; y++)
+		{
+			LevelGrid[y * levelWidth + x] = LevelGrid[y * levelWidth + levelWidth + x];
+		}
+	}
+	return false;
+}
+
 Level::LevelItem::LevelItem(const LevelItemType type)
 	:
 	type(type)
@@ -32,6 +49,35 @@ Level::LevelItem::LevelItem(const LevelItemType type)
 Level::LevelItem::LevelItem(const unsigned int maxHealth)
 {
 	block = new Block(maxHealth);
+}
+
+Level::LevelItem::LevelItem(const LevelItem & other)
+{
+	delete block;
+	block = nullptr;
+	type = other.type;
+	block = other.block;
+
+}
+
+Level::LevelItem & Level::LevelItem::operator=(const LevelItem & other)
+{
+	delete block;
+	block = nullptr;
+	type = other.type;
+	block = other.block;
+	return *this;
+}
+
+Level::LevelItem & Level::LevelItem::operator=(const LevelItemType type)
+{
+	delete block;
+	block = nullptr;
+	this->type = type;
+	if (type == LevelItemType::block)
+	{
+		block = new Block(69);
+	}
 }
 
 
