@@ -3,6 +3,7 @@
 #include <vector>
 #include "Constants.h"
 #include <assert.h>
+#include <random>
 
 class Level
 {
@@ -23,7 +24,8 @@ private:
 	{
 		empty,
 		block,
-		extraball
+		extraball,
+		last
 	};
 
 	class Block
@@ -56,7 +58,7 @@ private:
 	};
 
 
-
+	int score = 0;
 
 	std::vector<LevelItem*> LevelGrid;
 };

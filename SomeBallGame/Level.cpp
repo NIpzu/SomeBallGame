@@ -29,27 +29,42 @@ void Level::Draw(sf::RenderTarget & rt)
 
 bool Level::Update()
 {
-	bool temp = Move();
 	CreateNewItems();
-	return temp;
+	return Move();
 }
 
 bool Level::Move()
+{	
+	for (int x = 0; x < levelWidth; x++)
+	{
+		for (int y = 1; y < levelHeight; y++)
+		{
+			*LevelGrid[y * levelWidth + x] = *LevelGrid[y * levelWidth - levelWidth + x];
+		}
+	}
+	for (int x = 0; x < levelWidth; x++)
+	{
+		if (LevelGrid[x + levelHeight * levelWidth - levelWidth]->GetType() == LevelItemType::block)
+		{
+			return true;
+		}
+	}
+	score++;
+	return false;
+}
+
+void Level::CreateNewItems()
 {
 	for (int x = 0; x < levelWidth; x++)
 	{
-		for (int y = 1; y < levelHeight - 1; y++)
-		{
-			*LevelGrid[y * levelWidth + x] = *LevelGrid[y * levelWidth + levelWidth + x];
-		}
 	}
-	return false;
 }
 
 Level::LevelItem::LevelItem(const LevelItemType type)
 	:
 	type(type)
 {
+	assert(type != LevelItemType::last);
 }
 
 Level::LevelItem::LevelItem(const unsigned int maxHealth)
@@ -63,7 +78,7 @@ Level::LevelItem::LevelItem(const LevelItem & other)
 	block = nullptr;
 	type = other.type;
 	block = other.block;
-
+	assert(type != LevelItemType::last);
 }
 
 Level::LevelItem & Level::LevelItem::operator=(const LevelItem & other)
@@ -72,6 +87,7 @@ Level::LevelItem & Level::LevelItem::operator=(const LevelItem & other)
 	block = nullptr;
 	type = other.type;
 	block = other.block;
+	assert(type != LevelItemType::last);
 	return *this;
 }
 
@@ -80,10 +96,11 @@ Level::LevelItem & Level::LevelItem::operator=(const LevelItemType type)
 	delete block;
 	block = nullptr;
 	this->type = type;
-	if (type == LevelItemType::block)
+	if (type == LevelItemType::block, type == LevelItemType::block)
 	{
-		block = new Block(69);
+		assert(false);
 	}
+	return *this;
 }
 
 
