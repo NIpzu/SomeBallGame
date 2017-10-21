@@ -90,8 +90,8 @@ bool Balls::ActiveAnd()
 
 float Balls::CheckBorderCollision(Level& lvl)
 {
-	const int width = lvl.GetWidth() * 100;
-	const int height = lvl.GetHeight() * 100;
+	const int width = Constants::levelHeight * 100;
+	const int height = Constants::levelHeight * 100;
 	float lowestTime = -1.0f;
 	unsigned int bestBall = -1;
 	for (unsigned int i = 0; i < nBalls; i++)

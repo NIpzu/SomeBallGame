@@ -8,11 +8,11 @@ class Level
 {
 public:
 	Level(int x);
-	~Level();
+	//~Level();
 	int GetWidth();
 	int GetHeight();
 	void Draw(sf::RenderTarget& rt);
-	bool Move();
+	//bool Move();
 private:
 	const int levelWidth;
 	const int levelHeight;
