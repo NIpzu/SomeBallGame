@@ -52,7 +52,29 @@ void Game::Update()
 		looping = false;
 	}
 
+	if (phase == Phase::freeing)
+	{
+		if (freeingTimer >= freeingInterval)
+		{
+			freeingTimer -= freeingInterval;
 
+			if (balls.ActivateNext())
+			{
+				phase = Phase::playing;
+			}
+
+		}
+
+		freeingTimer += updateInterval;
+
+
+	}
+	else if (newBallStartingWidth > -1.0f)
+	{
+		ballStartingWidth = newBallStartingWidth;
+		newBallStartingWidth = -2.0f;
+		line[0] = sf::Vertex(sf::Vector2f(ballStartingWidth, float(levelHeight - ballRadius)), sf::Color::White);
+	}
 
 
 	if (phase == Phase::playing || phase == Phase::freeing)
@@ -76,7 +98,6 @@ void Game::Update()
 		phase = Phase::pressing;
 		mousePress = sf::Mouse::getPosition(win);
 		pressShape.setPosition(sf::Vector2f(float(mousePress.x), float(mousePress.y)));
-		line[1] = sf::Vertex(sf::Vector2f(ballStartingWidth, ballStartingHeight), sf::Color::Black);
 		BallShape.setPosition(ballStartingWidth - ballRadius, ballStartingHeight - ballRadius);
 	}
 
@@ -97,33 +118,6 @@ void Game::Update()
 		{
 			line[1] = sf::Vertex(sf::Vector2f(ballStartingWidth, ballStartingHeight) + mouseDirection, sf::Color::Black);
 		}
-	}
-
-
-
-
-	if (phase == Phase::freeing)
-	{
-		if (freeingTimer >= freeingInterval)
-		{
-			freeingTimer -= freeingInterval;
-
-			if (balls.ActivateNext())
-			{
-				phase = Phase::playing;
-			}
-
-		}
-
-		freeingTimer += updateInterval;
-
-
-	}
-	else if (newBallStartingWidth > -1.0f)
-	{
-		ballStartingWidth = newBallStartingWidth;
-		newBallStartingWidth = -2.0f;
-		line[0] = sf::Vertex(sf::Vector2f(ballStartingWidth, float(levelHeight - ballRadius)), sf::Color::White);
 	}
 }
 
