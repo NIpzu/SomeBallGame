@@ -32,6 +32,7 @@ private:
 		playing,
 		waiting
 	};
+	float dt;
 	float newBallStartingWidth = -2.0f;
 	float freeingTimer = 0.0f;
 	float ballStartingWidth;
@@ -43,4 +44,7 @@ private:
 	const float ballRadius;
 	const float freeingInterval;
 	Phase phase = Phase::waiting;
+
+
+	int slowdownModifier = 0;
 };

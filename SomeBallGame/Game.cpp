@@ -31,6 +31,7 @@ void Game::StartLoop()
 	{
 		if ((sinceLastUpdate += clock.restart().asSeconds()) > updateInterval)
 		{
+			dt = updateInterval;
 			sinceLastUpdate -= updateInterval;
 			Clear();
 			Update();
@@ -39,11 +40,12 @@ void Game::StartLoop()
 		}
 		else
 		{
+			dt = sinceLastUpdate;
+			sinceLastUpdate = 0.0f;
 			Clear();
 			Update();
 			Draw();
 			Dislpay();
-			sinceLastUpdate = 0.0f;
 		}
 	}
 }
@@ -55,7 +57,7 @@ void Game::Clear()
 
 void Game::Update()
 {
-if (sf::Keyboard::isKeyPressed(sf::Keyboard::Escape) || !win.isOpen())
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Escape) || !win.isOpen())
 	{
 		looping = false;
 	}
@@ -90,7 +92,7 @@ if (sf::Keyboard::isKeyPressed(sf::Keyboard::Escape) || !win.isOpen())
 			line[1] = sf::Vertex(sf::Vector2f(ballStartingWidth, ballStartingHeight) + mouseDirection, sf::Color::Black);
 		}
 	}
-	
+
 	if (phase == Phase::freeing)
 	{
 		if (freeingTimer >= freeingInterval)
@@ -104,7 +106,7 @@ if (sf::Keyboard::isKeyPressed(sf::Keyboard::Escape) || !win.isOpen())
 
 		}
 
-		freeingTimer += sinceLastUpdate;
+		freeingTimer += dt;
 	}
 	else if (newBallStartingWidth > -1.0f)
 	{
@@ -118,10 +120,9 @@ if (sf::Keyboard::isKeyPressed(sf::Keyboard::Escape) || !win.isOpen())
 
 
 
-
 	if (phase == Phase::playing || phase == Phase::freeing)
 	{
-		float updateReturn = balls.Update(level,sinceLastUpdate);
+		float updateReturn = balls.Update(level, dt);
 		if (updateReturn > -1.0f && newBallStartingWidth < -1.0f)
 		{
 			newBallStartingWidth = updateReturn;
