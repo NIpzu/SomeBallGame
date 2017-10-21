@@ -7,7 +7,7 @@
 class Level
 {
 public:
-	Level();
+	Level(int x);
 	~Level();
 	int GetWidth();
 	int GetHeight();
@@ -40,9 +40,11 @@ private:
 	{
 	public:
 		LevelItem(const LevelItemType type);
-		LevelItem(const Block* const block);
+		LevelItem(const unsigned int maxHealth);
+		LevelItem(const LevelItem& other);
+		LevelItem& operator= (const LevelItem& other);
 		~LevelItem();
-		void DestroyBlock();
+		void DamegeBlock();
 	private:
 		LevelItemType type;
 		Block* block = nullptr;

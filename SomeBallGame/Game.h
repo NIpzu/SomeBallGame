@@ -2,6 +2,7 @@
 #include <SFML\Graphics.hpp>
 #include "Balls.h"
 #include "Level.h"
+#include "Constants.h"
 
 class Game
 {

@@ -1,5 +1,4 @@
 #include "Game.h"
-#include "Constants.h"
 #include <cmath>
 
 Game::Game(sf::RenderWindow& win)
@@ -9,11 +8,11 @@ Game::Game(sf::RenderWindow& win)
 	BallShape(Constants::ballRadius, int(Constants::ballRadius) * 4),
 	balls(50, BallShape),
 	pressShape(6.0f, 20),
+	level(2),
 	levelHeight(Constants::levelHeight * 100),
 	levelWidth(Constants::levelWidth * 100),
 	updateInterval(Constants::updateInterval),
 	ballSpeed(Constants::ballSpeed),
-	level(Constants::levelWidth, Constants::levelHeight),
 	ballRadius(Constants::ballRadius),
 	ballStartingHeight(Constants::levelHeight * 100 - Constants::ballRadius),
 	ballStartingWidth(float(Constants::levelWidth * 50)),
