@@ -12,7 +12,7 @@ Game::Game(sf::RenderWindow& win)
 	levelHeight(Constants::levelHeight * 100),
 	levelWidth(Constants::levelWidth * 100),
 	updateInterval(Constants::updateInterval),
-	ballSpeed(Constants::ballSpeed * Constants::updateInterval),
+	ballSpeed(Constants::ballSpeed),
 	level(Constants::levelWidth, Constants::levelHeight),
 	ballRadius(Constants::ballRadius),
 	ballStartingHeight(Constants::levelHeight * 100 - Constants::ballRadius),
@@ -37,6 +37,14 @@ void Game::StartLoop()
 			Draw();
 			Dislpay();
 		}
+		else
+		{
+			Clear();
+			Update();
+			Draw();
+			Dislpay();
+			sinceLastUpdate = 0.0f;
+		}
 	}
 }
 
@@ -47,48 +55,13 @@ void Game::Clear()
 
 void Game::Update()
 {
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Escape) || !win.isOpen())
+if (sf::Keyboard::isKeyPressed(sf::Keyboard::Escape) || !win.isOpen())
 	{
 		looping = false;
 	}
 
-	if (phase == Phase::freeing)
-	{
-		if (freeingTimer >= freeingInterval)
-		{
-			freeingTimer -= freeingInterval;
-
-			if (balls.ActivateNext())
-			{
-				phase = Phase::playing;
-			}
-
-		}
-
-		freeingTimer += updateInterval;
 
 
-	}
-	else if (newBallStartingWidth > -1.0f)
-	{
-		ballStartingWidth = newBallStartingWidth;
-		newBallStartingWidth = -2.0f;
-		line[0] = sf::Vertex(sf::Vector2f(ballStartingWidth, float(levelHeight - ballRadius)), sf::Color::White);
-	}
-
-
-	if (phase == Phase::playing || phase == Phase::freeing)
-	{
-		float updateReturn = balls.Update(level);
-		if (updateReturn > -1.0f && newBallStartingWidth < -1.0f)
-		{
-			newBallStartingWidth = updateReturn;
-		}
-		if (!balls.ActiveOr())
-		{
-			phase = Phase::waiting;
-		}
-	}
 
 
 
@@ -102,8 +75,6 @@ void Game::Update()
 	}
 
 
-
-
 	if (phase == Phase::pressing)
 	{
 		sf::Vector2f mouseDirection(mousePress - sf::Mouse::getPosition(win));
@@ -112,13 +83,56 @@ void Game::Update()
 			mouseDirection *= (1.0f / std::sqrt(mouseDirection.x * mouseDirection.x + mouseDirection.y * mouseDirection.y));
 			balls.SetAll(sf::Vector2f(ballStartingWidth, ballStartingHeight), mouseDirection * ballSpeed);
 			phase = Phase::freeing;
-			freeingTimer = freeingInterval + updateInterval;
+			freeingTimer = 0.0f;
 		}
 		else
 		{
 			line[1] = sf::Vertex(sf::Vector2f(ballStartingWidth, ballStartingHeight) + mouseDirection, sf::Color::Black);
 		}
 	}
+	
+	if (phase == Phase::freeing)
+	{
+		if (freeingTimer >= freeingInterval)
+		{
+			freeingTimer -= freeingInterval;
+
+			if (balls.ActivateNext())
+			{
+				phase = Phase::playing;
+			}
+
+		}
+
+		freeingTimer += sinceLastUpdate;
+	}
+	else if (newBallStartingWidth > -1.0f)
+	{
+		ballStartingWidth = newBallStartingWidth;
+		newBallStartingWidth = -2.0f;
+		line[0] = sf::Vertex(sf::Vector2f(ballStartingWidth, float(levelHeight - ballRadius)), sf::Color::White);
+	}
+
+
+
+
+
+
+
+	if (phase == Phase::playing || phase == Phase::freeing)
+	{
+		float updateReturn = balls.Update(level,sinceLastUpdate);
+		if (updateReturn > -1.0f && newBallStartingWidth < -1.0f)
+		{
+			newBallStartingWidth = updateReturn;
+		}
+		if (!balls.ActiveOr() && phase == Phase::playing)
+		{
+			phase = Phase::waiting;
+		}
+	}
+
+
 }
 
 void Game::Draw()

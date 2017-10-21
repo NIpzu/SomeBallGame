@@ -15,8 +15,9 @@ void Balls::SetBallShape(sf::CircleShape newShape)
 	BallShape.setOrigin(radius, radius);
 }
 
-float Balls::Update(Level& lvl)
+float Balls::Update(Level& lvl,const float dt)
 {
+	this->dt = dt;
 	Move();
 	return Collide(lvl);
 }
@@ -25,7 +26,7 @@ void Balls::Move()
 {
 	for (unsigned int i = 0; i < nBalls; i++)
 	{
-		BallVec[i].Move();
+		BallVec[i].Move(dt);
 	}
 }
 
@@ -97,7 +98,7 @@ float Balls::CheckBorderCollision(Level& lvl)
 	{
 		if (BallVec[i].GetActive())
 		{
-			float time = BallVec[i].CheckBorderCollision(width, height, radius);
+			float time = BallVec[i].CheckBorderCollision(width, height, radius, dt);
 			if (time < lowestTime || bestBall == -1)
 			{
 				lowestTime = time;
@@ -167,15 +168,15 @@ void Balls::Ball::ResetTime()
 	floorHitTime = -1.0f;
 }
 
-void Balls::Ball::Move()
+void Balls::Ball::Move(const float dt)
 {
 	if (active)
 	{
-		pos += vel;
+		pos += vel * dt;
 	}
 }
 
-float Balls::Ball::CheckBorderCollision(const int width, const int height, const float radius)
+float Balls::Ball::CheckBorderCollision(const int width, const int height, const float radius, const float dt)
 {
 	const float rad2 = radius + radius;
 	if (pos.x + radius > width)
@@ -196,8 +197,8 @@ float Balls::Ball::CheckBorderCollision(const int width, const int height, const
 	if (pos.y + radius > height)
 	{
 		active = false;
-		pos.x -= vel.x * (1.0f - (pos.y + radius - height) / vel.y);
-		return (pos.y + radius - height) / vel.y;
+		pos.x -= (vel.x * dt) * (1.0f - (pos.y + radius - height) / (vel.y * dt));
+		return (pos.y + radius - height) / (vel.y * dt);
 	}
 	return -2.0f;
 }

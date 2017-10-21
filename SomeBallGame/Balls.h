@@ -8,7 +8,7 @@ class Balls
 public:
 	Balls(const unsigned int amount, sf::CircleShape newShape);
 	void SetBallShape(sf::CircleShape newShape);
-	float Update(Level& lvl);
+	float Update(Level& lvl,const float dt);
 	void Draw(sf::RenderTarget& rt);
 	void SetAll(sf::Vector2f pos, sf::Vector2f vel);
 	bool ActiveOr();
@@ -30,8 +30,8 @@ private:
 		void SetActive(bool newVal);
 		float GetTime();
 		void ResetTime();
-		void Move();
-		float CheckBorderCollision(const int widht, const int height, const float radius);
+		void Move(const float dt);
+		float CheckBorderCollision(const int widht, const int height, const float radius, const float dt);
 	private:
 		sf::Vector2f pos;
 		sf::Vector2f vel;
@@ -41,6 +41,7 @@ private:
 
 	std::vector<Ball> BallVec;
 	unsigned int nBalls;
+	float dt;
 	float radius;
 	sf::CircleShape BallShape;
 	unsigned int activatedTill = 0;
