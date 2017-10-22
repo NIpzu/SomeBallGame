@@ -5,15 +5,15 @@ Game::Game(sf::RenderWindow& win)
 	win(win),
 	clearColor(0, 0, 0, 255),
 	pressShape(6.0f, 20),
-	levelHeight(Constants::LevelHeight * 100),
-	levelWidth(Constants::LevelWidth * 100),
+	levelHeight(Constants::LevelHeight * Constants::BlockHeight),
+	levelWidth(Constants::LevelWidth * Constants::BlockWidth),
 	updateInterval(Constants::UpdateInterval),
 	ballSpeed(Constants::BallSpeed),
 	ballRadius(Constants::BallRadius),
-	ballStartingHeight(Constants::LevelHeight * 100 - Constants::BallRadius),
-	ballStartingWidth(float(Constants::LevelWidth * 50)),
+	ballStartingHeight(Constants::LevelHeight * Constants::BlockWidth - Constants::BallRadius),
+	ballStartingWidth(float(Constants::LevelWidth * Constants::BlockWidth / 2)),
 	freeingInterval(Constants::FreeingInterval),
-	BallShape(Constants::BallRadius, int(Constants::BallRadius) * 2),
+	BallShape(Constants::BallRadius, int(Constants::BallRadius) * 4),
 	balls(50, BallShape)
 {
 	pressShape.setOrigin(3.0f, 3.0f);
@@ -117,6 +117,7 @@ void Game::Update()
 		if (!balls.ActiveOr() && phase == Phase::playing)
 		{
 			phase = Phase::waiting;
+			level.MoveAndAdd();
 		}
 	}
 
@@ -160,6 +161,7 @@ void Game::Draw()
 	{
 		balls.Draw(win);
 	}
+	level.Draw(win);
 	win.draw(fpsCounter);
 }
 

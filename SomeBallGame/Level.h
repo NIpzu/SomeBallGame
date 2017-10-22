@@ -3,7 +3,6 @@
 #include <vector>
 #include "Constants.h"
 #include <assert.h>
-#include <random>
 
 class Level
 {
@@ -13,12 +12,16 @@ public:
 	int GetWidth();
 	int GetHeight();
 	void Draw(sf::RenderTarget& rt);
-	bool Update();
+	bool MoveAndAdd();
 private:
 	const int levelWidth;
 	const int levelHeight;
+	const int blockWidth;
+	const int blockHeight;
 	bool Move();
 	void CreateNewItems();
+	int nGridItems;
+	sf::RectangleShape blockShape;
 
 	enum class LevelItemType
 	{
@@ -27,12 +30,11 @@ private:
 		extraball,
 		last
 	};
-
 	class Block
 	{
 	public:
 		Block(const unsigned int maxHealth);
-		//void Draw(sf::RenderTarget& rt, const int x, const int y);
+		void Draw(sf::RenderTarget& rt, const int x, const int y);
 		bool Damage();
 	private:
 		unsigned int health;
@@ -52,6 +54,7 @@ private:
 		~LevelItem();
 		void DamegeBlock();
 		LevelItemType GetType();
+		void Draw(sf::RenderTarget& rt, const int x, const int y);
 	private:
 		LevelItemType type;
 		Block* block = nullptr;

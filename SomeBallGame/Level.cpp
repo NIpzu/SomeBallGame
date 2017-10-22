@@ -3,10 +3,15 @@
 Level::Level()
 	:
 	levelWidth(Constants::LevelWidth),
-	levelHeight(Constants::LevelHeight)
+	levelHeight(Constants::LevelHeight),
+	blockWidth(Constants::BlockWidth),
+	blockHeight(Constants::BlockHeight),
+	blockShape(sf::Vector2f(float(Constants::BlockWidth), float(Constants::BlockHeight)))
 {
-	LevelGrid.resize(levelWidth * (levelHeight - 2));
-	for (int i = 0; i < LevelGrid.size(); i++)
+	nGridItems = levelWidth * levelHeight;
+	blockShape.setOrigin(0.0f, 0.0f);
+	LevelGrid.resize(levelWidth * levelHeight);
+	for (int i = 0; i < nGridItems; i++)
 	{
 		LevelGrid[i] = new LevelItem(LevelItemType::empty);
 	}
@@ -24,10 +29,23 @@ int Level::GetHeight()
 
 void Level::Draw(sf::RenderTarget & rt)
 {
-
+	for (int i = 0; i < nGridItems; i++)
+	{
+		int x = i % levelWidth;
+		int y = i / levelWidth;
+		if (LevelGrid[i]->GetType() == LevelItemType::block)
+		{
+			blockShape.setPosition(float(x) * blockWidth, float(y) * blockHeight);
+			rt.draw(blockShape);
+		}
+		else
+		{
+		LevelGrid[i]->Draw(rt, x, y);
+		}
+	}
 }
 
-bool Level::Update()
+bool Level::MoveAndAdd()
 {
 	CreateNewItems();
 	return Move();
@@ -35,12 +53,17 @@ bool Level::Update()
 
 bool Level::Move()
 {	
-	for (int x = 0; x < levelWidth; x++)
+	
+	for (int y = levelHeight - levelWidth; y > 0; y--)
 	{
-		for (int y = 1; y < levelHeight; y++)
+		for (int x = 0; x < levelWidth; x++)
 		{
 			*LevelGrid[y * levelWidth + x] = *LevelGrid[y * levelWidth - levelWidth + x];
 		}
+	}
+	for (int x = 0; x < levelWidth; x++)
+	{
+		*LevelGrid[x] = LevelItemType::empty;
 	}
 	for (int x = 0; x < levelWidth; x++)
 	{
@@ -57,6 +80,7 @@ void Level::CreateNewItems()
 {
 	for (int x = 0; x < levelWidth; x++)
 	{
+		LevelGrid[x] = new LevelItem(static_cast<LevelItemType>(rand() % int(LevelItemType::last)));
 	}
 }
 
@@ -138,11 +162,28 @@ Level::LevelItemType Level::LevelItem::GetType()
 	return type;
 }
 
+void Level::LevelItem::Draw(sf::RenderTarget & rt, const int x, const int y)
+{
+	if (type == LevelItemType::block)
+	{
+		block->Draw(rt, x, y);
+	}
+	else
+	{
+
+	}
+}
+
 Level::Block::Block(const unsigned int maxHealth)
 	:
 	health(maxHealth),
 	maxHealth(maxHealth)
 {
+}
+
+void Level::Block::Draw(sf::RenderTarget & rt, const int x, const int y)
+{
+
 }
 
 bool Level::Block::Damage()
