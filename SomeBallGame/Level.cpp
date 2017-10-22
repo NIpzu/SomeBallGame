@@ -2,13 +2,13 @@
 
 Level::Level()
 	:
-	levelWidth(Constants::levelWidth),
-	levelHeight(Constants::levelHeight)
+	levelWidth(Constants::LevelWidth),
+	levelHeight(Constants::LevelHeight)
 {
 	LevelGrid.resize(levelWidth * (levelHeight - 2));
 	for (int i = 0; i < LevelGrid.size(); i++)
 	{
-		*LevelGrid[i] = LevelItemType::empty;
+		LevelGrid[i] = new LevelItem(LevelItemType::empty);
 	}
 }
 
@@ -74,8 +74,11 @@ Level::LevelItem::LevelItem(const unsigned int maxHealth)
 
 Level::LevelItem::LevelItem(const LevelItem & other)
 {
-	delete block;
-	block = nullptr;
+	if (!block)
+	{
+		delete block;
+		block = nullptr;
+	}
 	type = other.type;
 	block = other.block;
 	assert(type != LevelItemType::last);
@@ -83,8 +86,11 @@ Level::LevelItem::LevelItem(const LevelItem & other)
 
 Level::LevelItem & Level::LevelItem::operator=(const LevelItem & other)
 {
-	delete block;
-	block = nullptr;
+	if (!block)
+	{
+		delete block;
+		block = nullptr;
+	}
 	type = other.type;
 	block = other.block;
 	assert(type != LevelItemType::last);
@@ -93,8 +99,11 @@ Level::LevelItem & Level::LevelItem::operator=(const LevelItem & other)
 
 Level::LevelItem & Level::LevelItem::operator=(const LevelItemType type)
 {
+	if (!block)
+	{
 	delete block;
 	block = nullptr;
+	}
 	this->type = type;
 	if (type == LevelItemType::block, type == LevelItemType::block)
 	{
@@ -106,13 +115,16 @@ Level::LevelItem & Level::LevelItem::operator=(const LevelItemType type)
 
 Level::LevelItem::~LevelItem()
 {
-	delete block;
-	block = nullptr;
+	if (!block)
+	{
+		delete block;
+		block = nullptr;
+	}
 }
 
 void Level::LevelItem::DamegeBlock()
 {
-	assert(block != nullptr);
+	assert(!block);
 	if (block->Damage())
 	{
 	delete block;

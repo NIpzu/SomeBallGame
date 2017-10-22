@@ -1,12 +1,11 @@
 #pragma once
 
-class Constants
+namespace Constants
 {
-public:
-	static constexpr int levelWidth = 7;
-	static constexpr int levelHeight = 9;
-	static constexpr float updateInterval = 0.01f;
-	static constexpr float ballSpeed = 500.0f;
-	static constexpr float ballRadius = 5.0f;
-	static constexpr float freeingInterval = .05f;
+	static constexpr int LevelWidth = 7;
+	static constexpr int LevelHeight = 9;
+	static constexpr float UpdateInterval = 0.01f;
+	static constexpr float BallSpeed = 500.0f;
+	static constexpr float BallRadius = 5.0f;
+	static constexpr float FreeingInterval = .05f;
 };

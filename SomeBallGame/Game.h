@@ -3,6 +3,8 @@
 #include "Balls.h"
 #include "Level.h"
 #include "Constants.h"
+#include <cmath>
+#include <string>
 
 class Game
 {
@@ -19,6 +21,10 @@ private:
 	sf::CircleShape BallShape;
 	Balls balls;
 	float sinceLastUpdate;
+	float sinceLastRestart;
+	int fps = 0;
+	int updatesLastSecond = 0;
+	float sinceFpsCount = 0.0f;
 	bool looping = false;
 	sf::Clock clock;
 	sf::Vector2i mousePress;
@@ -45,7 +51,8 @@ private:
 	const float ballRadius;
 	const float freeingInterval;
 	Phase phase = Phase::waiting;
-
+	sf::Font font;
+	sf::Text fpsCounter;
 
 	int slowdownModifier = 0;
 };

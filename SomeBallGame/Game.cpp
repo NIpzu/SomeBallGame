@@ -1,25 +1,28 @@
 #include "Game.h"
-#include <cmath>
 
 Game::Game(sf::RenderWindow& win)
 	:
 	win(win),
 	clearColor(0, 0, 0, 255),
-	BallShape(Constants::ballRadius, int(Constants::ballRadius) * 4),
-	balls(50, BallShape),
 	pressShape(6.0f, 20),
-	levelHeight(Constants::levelHeight * 100),
-	levelWidth(Constants::levelWidth * 100),
-	updateInterval(Constants::updateInterval),
-	ballSpeed(Constants::ballSpeed),
-	ballRadius(Constants::ballRadius),
-	ballStartingHeight(Constants::levelHeight * 100 - Constants::ballRadius),
-	ballStartingWidth(float(Constants::levelWidth * 50)),
-	freeingInterval(Constants::freeingInterval)
+	levelHeight(Constants::LevelHeight * 100),
+	levelWidth(Constants::LevelWidth * 100),
+	updateInterval(Constants::UpdateInterval),
+	ballSpeed(Constants::BallSpeed),
+	ballRadius(Constants::BallRadius),
+	ballStartingHeight(Constants::LevelHeight * 100 - Constants::BallRadius),
+	ballStartingWidth(float(Constants::LevelWidth * 50)),
+	freeingInterval(Constants::FreeingInterval),
+	BallShape(Constants::BallRadius, int(Constants::BallRadius) * 2),
+	balls(50, BallShape)
 {
 	pressShape.setOrigin(3.0f, 3.0f);
 	pressShape.setFillColor(sf::Color(255, 255, 255, 125));
 	line[0] = sf::Vertex(sf::Vector2f(float(levelWidth / 2), float(levelHeight) - ballRadius), sf::Color::White);
+	font.loadFromFile("arial.ttf");
+	fpsCounter.setFont(font);
+	fpsCounter.setCharacterSize(20);
+	fpsCounter.setPosition(20.0f, 20.0f);
 }
 
 void Game::StartLoop()
@@ -27,24 +30,31 @@ void Game::StartLoop()
 	looping = true;
 	while (looping)
 	{
-		if ((sinceLastUpdate += clock.restart().asSeconds()) > updateInterval)
+		sinceLastRestart = clock.restart().asSeconds();
+		if ((sinceLastUpdate += sinceLastRestart) > updateInterval)
 		{
 			dt = updateInterval;
-			sinceLastUpdate -= updateInterval;
-			Clear();
-			Update();
-			Draw();
-			Dislpay();
 		}
 		else
 		{
 			dt = sinceLastUpdate;
-			sinceLastUpdate = 0.0f;
-			Clear();
-			Update();
-			Draw();
-			Dislpay();
 		}
+		if ((sinceFpsCount += sinceLastRestart) > 1.0f)
+		{
+			fps = updatesLastSecond;
+			sinceFpsCount = 0.0f;
+			updatesLastSecond = 0;
+		}
+		else
+		{
+			updatesLastSecond++;
+		}
+		fpsCounter.setString(std::to_string(fps));
+		Clear();
+		Update();
+		Draw();
+		Dislpay();
+		sinceLastUpdate = 0.0f;
 	}
 }
 
@@ -91,27 +101,6 @@ void Game::Update()
 		}
 	}
 
-	if (phase == Phase::freeing)
-	{
-		if (freeingTimer >= freeingInterval)
-		{
-			freeingTimer -= freeingInterval;
-
-			if (balls.ActivateNext())
-			{
-				phase = Phase::playing;
-			}
-
-		}
-
-		freeingTimer += dt;
-	}
-	else if (newBallStartingWidth > -1.0f)
-	{
-		ballStartingWidth = newBallStartingWidth;
-		newBallStartingWidth = -2.0f;
-		line[0] = sf::Vertex(sf::Vector2f(ballStartingWidth, float(levelHeight - ballRadius)), sf::Color::White);
-	}
 
 
 
@@ -132,6 +121,31 @@ void Game::Update()
 	}
 
 
+
+
+	if (phase == Phase::freeing)
+	{
+		freeingTimer += dt;
+
+		if (freeingTimer >= freeingInterval)
+		{
+			freeingTimer -= freeingInterval;
+			if (balls.ActivateNext(freeingTimer))
+			{
+				phase = Phase::playing;
+			}
+
+		}
+
+	}
+	else if (newBallStartingWidth > -1.0f)
+	{
+		ballStartingWidth = newBallStartingWidth;
+		newBallStartingWidth = -2.0f;
+		line[0] = sf::Vertex(sf::Vector2f(ballStartingWidth, float(levelHeight - ballRadius)), sf::Color::White);
+	}
+
+
 }
 
 void Game::Draw()
@@ -146,6 +160,7 @@ void Game::Draw()
 	{
 		balls.Draw(win);
 	}
+	win.draw(fpsCounter);
 }
 
 void Game::Dislpay()

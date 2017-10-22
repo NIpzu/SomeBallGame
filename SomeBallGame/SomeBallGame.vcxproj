@@ -138,6 +138,9 @@
     <ClInclude Include="Game.h" />
     <ClInclude Include="Level.h" />
   </ItemGroup>
+  <ItemGroup>
+    <Font Include="..\..\..\..\..\..\..\WINDOWS\Fonts\ARIAL.TTF" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

@@ -90,8 +90,8 @@ bool Balls::ActiveAnd()
 
 float Balls::CheckBorderCollision(Level& lvl)
 {
-	const int width = Constants::levelHeight * 100;
-	const int height = Constants::levelHeight * 100;
+	const int width = Constants::LevelWidth * 100;
+	const int height = Constants::LevelHeight * 100;
 	float lowestTime = -1.0f;
 	unsigned int bestBall = -1;
 	for (unsigned int i = 0; i < nBalls; i++)
@@ -113,9 +113,10 @@ float Balls::CheckBorderCollision(Level& lvl)
 	return -2.0f;
 }
 
-bool Balls::ActivateNext()
+bool Balls::ActivateNext(const float dt)
 {
 	BallVec[activatedTill].SetActive(true);
+	BallVec[activatedTill].Move(dt);
 	if (activatedTill + 1 >= nBalls)
 	{
 		activatedTill = 0;

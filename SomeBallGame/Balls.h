@@ -14,7 +14,7 @@ public:
 	bool ActiveOr();
 	bool ActiveAnd();
 	float Collide(Level& lvl);
-	bool ActivateNext();
+	bool ActivateNext(const float dt);
 private:
 	float CheckBorderCollision(Level& lvl);
 	void Move();
