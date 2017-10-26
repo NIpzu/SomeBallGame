@@ -32,6 +32,7 @@ void Balls::Move()
 
 float Balls::Collide(Level& lvl)
 {
+	CollideWithLevel(lvl);
 	return CheckBorderCollision(lvl);
 }
 
@@ -111,6 +112,27 @@ float Balls::CheckBorderCollision(Level& lvl)
 	return BallVec[bestBall].GetPos().x;
 	}
 	return -2.0f;
+}
+
+void Balls::CollideWithLevel(Level & lvl)
+{
+	for (unsigned int i = 0; i < nBalls; i++)
+	{
+		int x = int(BallVec[i].GetPos().x) / Constants::BlockWidth;
+		int y = int(BallVec[i].GetPos().y) / Constants::BlockHeight;
+		Level::LevelItemType Items[9];
+		for (int tx = 0; tx < 3; tx++)
+		{
+			for (int ty = 0; ty < 3; ty++)
+			{
+				Items[ty * 3 + tx] = lvl.GetType(x + tx - 1, y + ty - 1);
+				if (Items[4] == Level::LevelItemType::block)
+				{
+					BallVec[i].SetVel(-BallVec[i].GetVel());
+				}
+			}
+		}
+	}
 }
 
 bool Balls::ActivateNext(const float dt)

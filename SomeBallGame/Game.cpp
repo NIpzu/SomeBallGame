@@ -117,7 +117,10 @@ void Game::Update()
 		if (!balls.ActiveOr() && phase == Phase::playing)
 		{
 			phase = Phase::waiting;
-			level.MoveAndAdd();
+			if (level.MoveAndAdd())
+			{
+				//yee you lose
+			}
 		}
 	}
 

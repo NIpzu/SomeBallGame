@@ -8,13 +8,16 @@ Level::Level()
 	blockHeight(Constants::BlockHeight),
 	blockShape(sf::Vector2f(float(Constants::BlockWidth) - (float(Constants::BlockWidth) / 10.0f), float(Constants::BlockHeight) - (float(Constants::BlockWidth) / 10.0f))),
 	rng(rd()),
-	Rand(0, static_cast<int>(LevelItemType::block))
+	Rand(0, static_cast<int>(LevelItemType::block)),
+	extraBallShape(Constants::PowerUpRadius, int(Constants::PowerUpRadius) * 4)
 {
 	blockShape.setFillColor(sf::Color::Black);
 	blockShape.setOutlineColor(sf::Color::White);
 	blockShape.setOutlineThickness((float(Constants::BlockWidth) / 40.0f));
+	extraBallShape.setOrigin(Constants::PowerUpRadius, Constants::PowerUpRadius);
+	extraBallShape.setFillColor(sf::Color::Red);
 	nGridItems = levelWidth * levelHeight;
-	blockShape.setOrigin((float(Constants::BlockWidth) / 20.0f), (float(Constants::BlockWidth) / 20.0f));
+	blockShape.setOrigin(-(float(Constants::BlockWidth) / 20.0f), -(float(Constants::BlockWidth) / 20.0f));
 	LevelGrid.resize(levelWidth * levelHeight);
 	for (int i = 0; i < nGridItems; i++)
 	{
@@ -38,14 +41,18 @@ void Level::Draw(sf::RenderTarget & rt)
 	{
 		int x = i % levelWidth;
 		int y = i / levelWidth;
-		if (LevelGrid[i]->GetType() == LevelItemType::block)
+		switch (LevelGrid[i]->GetType())
 		{
+		case LevelItemType::block:
 			blockShape.setPosition(float(x) * blockWidth, float(y) * blockHeight);
 			rt.draw(blockShape);
-		}
-		else
-		{
-		LevelGrid[i]->Draw(rt, x, y);
+			break;
+		case LevelItemType::extraball:
+			extraBallShape.setPosition((float(x) + 0.5f) * blockWidth, (float(y) + 0.5f) * blockHeight);
+			rt.draw(extraBallShape);
+			break;
+		default:
+			break;
 		}
 	}
 }
@@ -54,6 +61,15 @@ bool Level::MoveAndAdd()
 {
 	CreateNewItems();
 	return Move();
+}
+
+Level::LevelItemType Level::GetType(const int x, const int y) const
+{
+	if (x < 0 || x >= levelWidth || y < 0 || y >= levelHeight)
+	{
+		return LevelItemType::empty;
+	}
+	return LevelGrid[y * levelWidth + x]->GetType();
 }
 
 bool Level::Move()
@@ -186,10 +202,6 @@ Level::LevelItemType Level::LevelItem::GetType()
 	return type;
 }
 
-void Level::LevelItem::Draw(sf::RenderTarget & rt, const int x, const int y)
-{
-	
-}
 
 Level::Block::Block(const unsigned int maxHealth)
 	:

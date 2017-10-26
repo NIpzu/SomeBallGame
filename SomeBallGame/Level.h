@@ -8,12 +8,19 @@
 class Level
 {
 public:
+	enum class LevelItemType
+	{
+		empty,
+		extraball,
+		block
+	};
 	Level();
 	//~Level();
 	int GetWidth();
 	int GetHeight();
 	void Draw(sf::RenderTarget& rt);
 	bool MoveAndAdd();
+	LevelItemType GetType(const int x, const int y) const;
 private:
 	const int levelWidth;
 	const int levelHeight;
@@ -23,13 +30,9 @@ private:
 	void CreateNewItems();
 	int nGridItems;
 	sf::RectangleShape blockShape;
+	sf::CircleShape extraBallShape;
 
-	enum class LevelItemType
-	{
-		empty,
-		extraball,
-		block
-	};
+	
 	class Block
 	{
 	public:
@@ -53,7 +56,6 @@ private:
 		~LevelItem();
 		void DamegeBlock();
 		LevelItemType GetType();
-		void Draw(sf::RenderTarget& rt, const int x, const int y);
 	private:
 		LevelItemType type;
 		Block* block = nullptr;

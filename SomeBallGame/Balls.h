@@ -13,10 +13,11 @@ public:
 	void SetAll(sf::Vector2f pos, sf::Vector2f vel);
 	bool ActiveOr();
 	bool ActiveAnd();
-	float Collide(Level& lvl);
 	bool ActivateNext(const float dt);
 private:
+	float Collide(Level& lvl);
 	float CheckBorderCollision(Level& lvl);
+	void CollideWithLevel(Level& lvl);
 	void Move();
 	void ResetTimers();
 	class Ball
