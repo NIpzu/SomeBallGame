@@ -6,12 +6,15 @@ Level::Level()
 	levelHeight(Constants::LevelHeight),
 	blockWidth(Constants::BlockWidth),
 	blockHeight(Constants::BlockHeight),
-	blockShape(sf::Vector2f(float(Constants::BlockWidth), float(Constants::BlockHeight))),
+	blockShape(sf::Vector2f(float(Constants::BlockWidth) - (float(Constants::BlockWidth) / 10.0f), float(Constants::BlockHeight) - (float(Constants::BlockWidth) / 10.0f))),
 	rng(rd()),
 	Rand(0, static_cast<int>(LevelItemType::block))
 {
+	blockShape.setFillColor(sf::Color::Black);
+	blockShape.setOutlineColor(sf::Color::White);
+	blockShape.setOutlineThickness((float(Constants::BlockWidth) / 40.0f));
 	nGridItems = levelWidth * levelHeight;
-	blockShape.setOrigin(0.0f, 0.0f);
+	blockShape.setOrigin((float(Constants::BlockWidth) / 20.0f), (float(Constants::BlockWidth) / 20.0f));
 	LevelGrid.resize(levelWidth * levelHeight);
 	for (int i = 0; i < nGridItems; i++)
 	{
@@ -56,7 +59,7 @@ bool Level::MoveAndAdd()
 bool Level::Move()
 {	
 	
-	for (int y = levelHeight - levelWidth; y > 0; y--)
+	for (int y = levelHeight - 1; y > 0; y--)
 	{
 		for (int x = 0; x < levelWidth; x++)
 		{
