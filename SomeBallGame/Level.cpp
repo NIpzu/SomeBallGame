@@ -13,7 +13,7 @@ Level::Level()
 	LevelGrid.resize(levelWidth * levelHeight);
 	for (int i = 0; i < nGridItems; i++)
 	{
-		LevelGrid[i] = new LevelItem(LevelItemType::empty);
+		LevelGrid[i] = new LevelItem(LevelItemType::empty, 0);
 	}
 }
 
@@ -80,21 +80,27 @@ void Level::CreateNewItems()
 {
 	for (int x = 0; x < levelWidth; x++)
 	{
-		LevelGrid[x] = new LevelItem(static_cast<LevelItemType>(rand() % int(LevelItemType::last)));
+		LevelGrid[x] = new LevelItem(static_cast<LevelItemType>(rand() % int(LevelItemType::last)), score);
 	}
 }
 
-Level::LevelItem::LevelItem(const LevelItemType type)
+Level::LevelItem::LevelItem(const LevelItemType type, const int maxHealth)
 	:
 	type(type)
 {
+	if (!block)
+	{
+		delete block;
+		block = nullptr;
+	}
+	if (type == LevelItemType::block)
+	{
+		assert(maxHealth != -1);
+		block = new Block(maxHealth);
+	}
 	assert(type != LevelItemType::last);
 }
 
-Level::LevelItem::LevelItem(const unsigned int maxHealth)
-{
-	block = new Block(maxHealth);
-}
 
 Level::LevelItem::LevelItem(const LevelItem & other)
 {
@@ -129,7 +135,7 @@ Level::LevelItem & Level::LevelItem::operator=(const LevelItemType type)
 	block = nullptr;
 	}
 	this->type = type;
-	if (type == LevelItemType::block, type == LevelItemType::block)
+	if (type == LevelItemType::block || type == LevelItemType::last)
 	{
 		assert(false);
 	}
@@ -164,14 +170,7 @@ Level::LevelItemType Level::LevelItem::GetType()
 
 void Level::LevelItem::Draw(sf::RenderTarget & rt, const int x, const int y)
 {
-	if (type == LevelItemType::block)
-	{
-		block->Draw(rt, x, y);
-	}
-	else
-	{
-
-	}
+	
 }
 
 Level::Block::Block(const unsigned int maxHealth)
@@ -181,10 +180,6 @@ Level::Block::Block(const unsigned int maxHealth)
 {
 }
 
-void Level::Block::Draw(sf::RenderTarget & rt, const int x, const int y)
-{
-
-}
 
 bool Level::Block::Damage()
 {

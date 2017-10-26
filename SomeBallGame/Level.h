@@ -34,7 +34,6 @@ private:
 	{
 	public:
 		Block(const unsigned int maxHealth);
-		void Draw(sf::RenderTarget& rt, const int x, const int y);
 		bool Damage();
 	private:
 		unsigned int health;
@@ -46,8 +45,7 @@ private:
 	class LevelItem
 	{
 	public:
-		LevelItem(const LevelItemType type);
-		LevelItem(const unsigned int maxHealth);
+		LevelItem(const LevelItemType type, const int maxHealth);
 		LevelItem(const LevelItem& other);
 		LevelItem& operator= (const LevelItem& other);
 		LevelItem& operator= (const LevelItemType type);
@@ -61,7 +59,7 @@ private:
 	};
 
 
-	int score = 0;
+	int score = 1;
 
 	std::vector<LevelItem*> LevelGrid;
 };
