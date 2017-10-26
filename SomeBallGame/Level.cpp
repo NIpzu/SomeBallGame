@@ -25,6 +25,15 @@ Level::Level()
 	}
 }
 
+Level::~Level()
+{
+	for (int i = 0; i < nGridItems; i++)
+	{
+		delete LevelGrid[i];
+		LevelGrid[i] = nullptr;
+	}
+}
+
 int Level::GetWidth()
 {
 	return levelWidth;
@@ -70,6 +79,21 @@ Level::LevelItemType Level::GetType(const int x, const int y) const
 		return LevelItemType::empty;
 	}
 	return LevelGrid[y * levelWidth + x]->GetType();
+}
+
+void Level::Hit(const int x, const int y)
+{
+	switch (LevelGrid[y * levelWidth + x]->GetType())
+	{
+	case LevelItemType::block:
+		LevelGrid[y * levelWidth + x]->DamageBlock();
+		break;
+	case LevelItemType::extraball:
+		*LevelGrid[y * levelWidth + x] = LevelItemType::empty;
+		break;
+	default:
+		break;
+	}
 }
 
 bool Level::Move()
@@ -186,9 +210,9 @@ Level::LevelItem::~LevelItem()
 	}
 }
 
-void Level::LevelItem::DamegeBlock()
+void Level::LevelItem::DamageBlock()
 {
-	assert(!block);
+	assert(block);
 	if (block->Damage())
 	{
 	delete block;

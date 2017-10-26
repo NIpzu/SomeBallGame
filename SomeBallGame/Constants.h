@@ -8,8 +8,8 @@ namespace Constants
 	static constexpr int BlockWidth = 100;
 	static constexpr int BlockHeight = 100;
 	static constexpr float UpdateInterval = 0.01f;
-	static constexpr float BallSpeed = 2000.0f;
+	static constexpr float BallSpeed = 500.0f;
 	static constexpr float BallRadius = 5.0f;
-	static constexpr float FreeingInterval = .01f;
+	static constexpr float FreeingInterval = .05f;
 	static constexpr float PowerUpRadius = 10.0f;
 };

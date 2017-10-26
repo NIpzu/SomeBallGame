@@ -13,6 +13,8 @@ void Balls::SetBallShape(sf::CircleShape newShape)
 	BallShape = newShape;
 	radius = BallShape.getRadius();
 	BallShape.setOrigin(radius, radius);
+	assert(2.0f * radius < float(Constants::BlockHeight));
+	assert(2.0f * radius < float(Constants::BlockWidth));
 }
 
 float Balls::Update(Level& lvl,const float dt)
@@ -118,20 +120,36 @@ void Balls::CollideWithLevel(Level & lvl)
 {
 	for (unsigned int i = 0; i < nBalls; i++)
 	{
-		int x = int(BallVec[i].GetPos().x) / Constants::BlockWidth;
-		int y = int(BallVec[i].GetPos().y) / Constants::BlockHeight;
+		const int x = int(BallVec[i].GetPos().x) / Constants::BlockWidth;
+		const int y = int(BallVec[i].GetPos().y) / Constants::BlockHeight;
+		const sf::Vector2f pos = BallVec[i].GetPos();
+		const sf::Vector2f vel = BallVec[i].GetVel();
 		Level::LevelItemType Items[9];
 		for (int tx = 0; tx < 3; tx++)
 		{
 			for (int ty = 0; ty < 3; ty++)
 			{
-				Items[ty * 3 + tx] = lvl.GetType(x + tx - 1, y + ty - 1);
-				if (Items[4] == Level::LevelItemType::block)
+				Items[ty * 3 + tx] = lvl.GetType(x + tx - 1, y + ty - 1); ////THIS THING IS A PERFORMANCE HOG
+				if (Items[ty * 3 + tx] == Level::LevelItemType::extraball)
 				{
-					BallVec[i].SetVel(-BallVec[i].GetVel());
+					if (std::pow(pos.x - float(Constants::BlockWidth) * (float(x) + 0.5f + float(tx - 1)), 2) + 
+						std::pow(pos.y - float(Constants::BlockHeight) * (float(y) + 0.5f + float(ty - 1)), 2) <= 
+						std::pow(Constants::PowerUpRadius + radius, 2))
+					{
+						lvl.Hit(x + tx - 1, y + ty - 1);
+					}
 				}
 			}
 		}
+
+
+
+		const float maxLeft = pos.x - radius;
+		const float maxRight = pos.x + radius;
+		const float maxUp = pos.y - radius;
+		const float maxDown = pos.y + radius;
+
+
 	}
 }
 

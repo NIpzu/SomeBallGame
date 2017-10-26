@@ -15,12 +15,13 @@ public:
 		block
 	};
 	Level();
-	//~Level();
+	~Level();
 	int GetWidth();
 	int GetHeight();
 	void Draw(sf::RenderTarget& rt);
 	bool MoveAndAdd();
 	LevelItemType GetType(const int x, const int y) const;
+	void Hit(const int x, const int y);
 private:
 	const int levelWidth;
 	const int levelHeight;
@@ -54,7 +55,7 @@ private:
 		LevelItem& operator= (const LevelItem& other);
 		LevelItem& operator= (const LevelItemType type);
 		~LevelItem();
-		void DamegeBlock();
+		void DamageBlock();
 		LevelItemType GetType();
 	private:
 		LevelItemType type;
