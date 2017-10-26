@@ -6,14 +6,16 @@ Level::Level()
 	levelHeight(Constants::LevelHeight),
 	blockWidth(Constants::BlockWidth),
 	blockHeight(Constants::BlockHeight),
-	blockShape(sf::Vector2f(float(Constants::BlockWidth), float(Constants::BlockHeight)))
+	blockShape(sf::Vector2f(float(Constants::BlockWidth), float(Constants::BlockHeight))),
+	rng(rd()),
+	Rand(0, static_cast<int>(LevelItemType::block))
 {
 	nGridItems = levelWidth * levelHeight;
 	blockShape.setOrigin(0.0f, 0.0f);
 	LevelGrid.resize(levelWidth * levelHeight);
 	for (int i = 0; i < nGridItems; i++)
 	{
-		LevelGrid[i] = new LevelItem(LevelItemType::empty, 0);
+		LevelGrid[i] = new LevelItem(LevelItemType::empty);
 	}
 }
 
@@ -80,7 +82,8 @@ void Level::CreateNewItems()
 {
 	for (int x = 0; x < levelWidth; x++)
 	{
-		LevelGrid[x] = new LevelItem(static_cast<LevelItemType>(rand() % int(LevelItemType::last)), score);
+
+		LevelGrid[x] = new LevelItem(static_cast<LevelItemType>(Rand(rng)),score);
 	}
 }
 
@@ -98,7 +101,21 @@ Level::LevelItem::LevelItem(const LevelItemType type, const int maxHealth)
 		assert(maxHealth != -1);
 		block = new Block(maxHealth);
 	}
-	assert(type != LevelItemType::last);
+}
+
+Level::LevelItem::LevelItem(const LevelItemType type)
+	:
+	type(type)
+{
+	if (!block)
+	{
+		delete block;
+		block = nullptr;
+	}
+	if (type == LevelItemType::block)
+	{
+		assert(false);
+	}
 }
 
 
@@ -111,7 +128,6 @@ Level::LevelItem::LevelItem(const LevelItem & other)
 	}
 	type = other.type;
 	block = other.block;
-	assert(type != LevelItemType::last);
 }
 
 Level::LevelItem & Level::LevelItem::operator=(const LevelItem & other)
@@ -123,7 +139,6 @@ Level::LevelItem & Level::LevelItem::operator=(const LevelItem & other)
 	}
 	type = other.type;
 	block = other.block;
-	assert(type != LevelItemType::last);
 	return *this;
 }
 
@@ -135,7 +150,7 @@ Level::LevelItem & Level::LevelItem::operator=(const LevelItemType type)
 	block = nullptr;
 	}
 	this->type = type;
-	if (type == LevelItemType::block || type == LevelItemType::last)
+	if (type == LevelItemType::block)
 	{
 		assert(false);
 	}

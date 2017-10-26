@@ -3,6 +3,7 @@
 #include <vector>
 #include "Constants.h"
 #include <assert.h>
+#include <random>
 
 class Level
 {
@@ -26,9 +27,8 @@ private:
 	enum class LevelItemType
 	{
 		empty,
-		block,
 		extraball,
-		last
+		block
 	};
 	class Block
 	{
@@ -46,6 +46,7 @@ private:
 	{
 	public:
 		LevelItem(const LevelItemType type, const int maxHealth);
+		LevelItem(const LevelItemType type);
 		LevelItem(const LevelItem& other);
 		LevelItem& operator= (const LevelItem& other);
 		LevelItem& operator= (const LevelItemType type);
@@ -60,6 +61,10 @@ private:
 
 
 	int score = 1;
+
+	std::random_device rd;
+	std::mt19937 rng;
+	std::uniform_int_distribution<int> Rand;
 
 	std::vector<LevelItem*> LevelGrid;
 };
